@@ -61,30 +61,42 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
   }
 
   const getExcerpt = (file, options) => {
-    const excerpt =
-      file.content
-        .split("\n")
-        .filter(
-          (paragraph) =>
-            paragraph !== "" &&
-            !paragraph?.startsWith("```") &&
-            !paragraph?.startsWith("<img") &&
-            !paragraph?.startsWith("<span") &&
-            !paragraph?.startsWith("#") &&
-            !paragraph?.startsWith("##") &&
-            !paragraph?.startsWith("###")
-        )
-        .splice(0, 4)
-        .join(" ") + "...";
-    file.excerpt = excerpt;
+    const { content } = file;
+    if (typeof content === "string") {
+      const splited = content.split("\n");
+
+      let i = 0;
+      const paragraphs: string[] = [];
+      while (
+        paragraphs.reduce((acc, paragraph) => {
+          return acc + paragraph?.length;
+        }, 0) < 600 &&
+        i < splited.length
+      ) {
+        let paragraph = splited[i];
+        if (
+          paragraph !== "" &&
+          !paragraph?.startsWith("```") &&
+          !paragraph?.startsWith("<")
+        ) {
+          if (paragraph.startsWith("#")) {
+            paragraph = paragraph.replace(/[#]/g, "");
+          }
+          paragraphs.push(paragraph.trim());
+        }
+        ++i;
+      }
+      const excerpt = paragraphs.join(" ") + "...";
+      file.excerpt = excerpt;
+    }
   };
 
   const { data, content, excerpt } = matter(markdownWithMetadata, {
-    excerpt: true,
     // @ts-ignore
     // excerpt is wrongly typed. expect fix in future version
+    excerpt: getExcerpt,
   });
-  console.log(data);
+  console.log(excerpt);
   return {
     props: {
       frontmatter: {

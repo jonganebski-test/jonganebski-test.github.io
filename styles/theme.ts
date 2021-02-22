@@ -8,6 +8,6 @@ const defaultTheme = {
 
 export type ThemeType = typeof defaultTheme;
 
-export const iStyled = styled as ThemedBaseStyledInterface<ThemeType>;
+// export const iStyled = styled as ThemedBaseStyledInterface<ThemeType>;
 
 export default defaultTheme;
