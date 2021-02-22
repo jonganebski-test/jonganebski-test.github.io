@@ -96,7 +96,6 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
     // excerpt is wrongly typed. expect fix in future version
     excerpt: getExcerpt,
   });
-  console.log(excerpt);
   return {
     props: {
       frontmatter: {
