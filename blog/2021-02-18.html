@@ -1,0 +1,129 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width"/><meta charSet="utf-8"/><title>간단하고 자그마한 나의 PostgreSQL 명령문들 | Jon Ganebski test page</title><meta name="next-head-count" content="3"/><noscript data-n-css=""></noscript><link rel="preload" href="/_next/static/chunks/main-169ce08b66015a7a4280.js" as="script"/><link rel="preload" href="/_next/static/chunks/webpack-50bee04d1dc61f8adf5b.js" as="script"/><link rel="preload" href="/_next/static/chunks/framework.0c239260661ae1d12aa2.js" as="script"/><link rel="preload" href="/_next/static/chunks/3ef630e34cd10ba68f9d468ac363ff81c534e1e9.02c1a86df8cc819e73c2.js" as="script"/><link rel="preload" href="/_next/static/chunks/71247caf95475e3ea7f9a0f8a30beb258b23d005.8776f26ccde912c7e1b0.js" as="script"/><link rel="preload" href="/_next/static/chunks/pages/_app-b214772b8bebbaf1d838.js" as="script"/><link rel="preload" href="/_next/static/chunks/pages/blog/%5Bslug%5D-e6b10c68b57b19a16109.js" as="script"/><style data-styled="" data-styled-version="5.2.1"></style></head><body><div id="__next"><div><main><div>명령문을 모두 알고 있지는 않다. 하지만 개인 프로젝트를 진행하면서 가장 빈번하게 사용하게 되는 기본적인 명령어들을 정리해 보고자 한다. 물론 pgAdmin같은 GUI를 사용한다면 필요없겠지만... wsl2를 사용하고 있으므로 아래의 예시들은 모두 wsl2 환경에서 진행됐다. wsl2에서 postgresql을 실행 &gt; sudo -u postgres psql 그러면 `postgres=#`로 표시되는 psql로 들어가게 된다. 시작하기 전에... 여기서 몇 가지 일러두자면, 대문자를 쓰는 이유는 SQL명령문임을 강조하기 위해서다. 소문자로 입력하더라고 상관이 없다. 다만 데이터베이스의 종류에 따라서는 그래도 대소문자를 구별해 주는 것이 좋다고 알고 있는데, 적어도 이 포스트 내용에 한해서는 괜찮다. 그리고 명령어 마지막에 항상 `;`을 붙여야 한다. 이거 의외로 실수하기 쉬우니 명심하자. 세미콜론을 붙이지 않으면 명령문이 실행되지 않고 `postgres-#`로 넘어간다. postgres=# SELECT CURRENT_USER (;빼먹음!) postgres-# 당황하지 말고 `;`을 마저 적고 엔터를 치면 된다. postgres=# SELECT CURRENT_USER (;빼먹음!) postgres-# ;...</div>&lt;img src=&quot;https://images.unsplash.com/photo-1535077516733-ad29da1026f6?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&amp;ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=1398&amp;q=80&quot; alt=&quot;Elephant&quot; title=&quot;Elephant&quot;&gt;
+&lt;span class=&quot;photo-reference&quot;&gt;Photo by &lt;a href=&quot;https://unsplash.com/@davidclode?utm_source=unsplash&amp;amp;utm_medium=referral&amp;amp;utm_content=creditCopyText&quot;&gt;David Clode&lt;/a&gt; on &lt;a href=&quot;https://unsplash.com/s/photos/baby-elephant?utm_source=unsplash&amp;amp;utm_medium=referral&amp;amp;utm_content=creditCopyText&quot;&gt;Unsplash&lt;/a&gt;&lt;/span&gt;<p>명령문을 모두 알고 있지는 않다. 하지만 개인 프로젝트를 진행하면서 가장 빈번하게 사용하게 되는 기본적인 명령어들을 정리해 보고자 한다. 물론 pgAdmin같은 GUI를 사용한다면 필요없겠지만...<br/>wsl2를 사용하고 있으므로 아래의 예시들은 모두 wsl2 환경에서 진행됐다.</p><p>wsl2에서 postgresql을 실행</p><pre><code>&gt; sudo -u postgres psql</code></pre><p>그러면 <code>postgres=#</code>로 표시되는 psql로 들어가게 된다.</p><h2>시작하기 전에...</h2><p>여기서 몇 가지 일러두자면, 대문자를 쓰는 이유는 SQL명령문임을 강조하기 위해서다. 소문자로 입력하더라고 상관이 없다. 다만 데이터베이스의 종류에 따라서는 그래도 대소문자를 구별해 주는 것이 좋다고 알고 있는데, 적어도 이 포스트 내용에 한해서는 괜찮다.<br/>그리고 명령어 마지막에 항상 <code>;</code>을 붙여야 한다. 이거 의외로 실수하기 쉬우니 명심하자. 세미콜론을 붙이지 않으면 명령문이 실행되지 않고 <code>postgres-#</code>로 넘어간다.</p><pre><code>postgres=# SELECT CURRENT_USER (;빼먹음!)
+postgres-#</code></pre><p>당황하지 말고 <code>;</code>을 마저 적고 엔터를 치면 된다.</p><pre><code>postgres=# SELECT CURRENT_USER (;빼먹음!)
+postgres-# ;
+
+current_user
+--------------
+postgres
+(1 row)
+
+postgres=#</code></pre><h2><code>CREATE USER 유저이름 WITH PASSWORD &#x27;암호&#x27;;</code></h2><p>postgres는 기본적으로 존재하는 superuser다. 이 유저로 진행해도 개인 사이드 프로젝트 정도라면 별 상관이 없겠지만 그래도 새로운 유저를 등록하는 것이 좋다. 암호를 적을 때에는 작은 따옴표를 써야 된다.(<code>&#x27;&#x27;</code>)</p><pre><code>postgres=# CREATE USER 유저이름 WITH PASSWORD &#x27;암호&#x27;;
+
+CREATE ROLE</code></pre><h2><code>ALTER USER 유저이름 WITH CREATEDB;</code></h2><p>새로 생성된 유저로 프로젝트를 진행하기 위해서는 이 유저로 데이터베이스를 만들 수 있는 권한을 부여해 줘야 된다.</p><pre><code>postgres=# ALTER USER 유저이름 WITH CREATEDB;
+
+ALTER ROLE</code></pre><h2><code>\du</code></h2><p>이 명령어는 모든 유저들을 보여준다. 우리가 생성한 유저에게 Create DB 라고 데이터베이스를 생성할 수 있는 권한이 부여된 것을 볼 수 있다.</p><pre><code>postgres=# \du
+
+                                    List of roles
+  Role name  |                         Attributes                         | Member of
+-------------+------------------------------------------------------------+-----------
+ postgres    | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
+ 유저이름    | Create DB                                                  | {}</code></pre><h2><code>SET ROLE 유저이름;</code></h2><p>여기까지는 superuser인 postgres로 진행한 것이다. 이제 방금 생성한 유저로 갈아타 보자.</p><pre><code>postgres=# SET ROLE 유저이름;
+
+SET
+
+postgres=&gt;</code></pre><h2><code>SELECT CURRENT_USER;</code></h2><p>지금 사용 중인 유저가 어떤 유저인지 볼 수 있다. 우리가 만든 유저로 무사히 넘어왔음을 볼 수 있다.</p><pre><code>postgres=&gt; SELECT CURRENT_USER;
+
+current_user
+--------------
+유저이름
+(1 row)
+
+postgres=&gt;</code></pre><h2><code>CREATE DATABASE 데이터베이스이름;</code></h2><p>데이터베이스를 만든다.</p><pre><code>postgres=&gt; CREATE DATABASE 데이터베이스이름;
+
+CREATE DATABASE
+
+postgres=&gt;</code></pre><h2><code>\l</code></h2><p>소문자 엘이다. 대문자가 L인 그 엘. 리스트(list)의 엘. 현재 postgresql의 모든 데이터베이스들을 보여준다. 우리가 만든 데이터베이스 말고도 postgres, template0, template1이 있으면 정상이다. 이것들은 건들지 말자.</p><pre><code>postgres=&gt; \l
+
+                                List of databases
+    Name         |    Owner    | Encoding | Collate |  Ctype  |   Access privileges
+-----------------+-------------+----------+---------+---------+-----------------------
+ 데이터베이스이름| 유저이름    | UTF8     | C.UTF-8 | C.UTF-8 |
+ postgres        | postgres    | UTF8     | C.UTF-8 | C.UTF-8 |
+ template0       | postgres    | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +
+                 |             |          |         |         | postgres=CTc/postgres
+ template1       | postgres    | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +
+                 |             |          |         |         | postgres=CTc/postgres
+(4 rows)
+
+postgres=&gt;</code></pre><h2><code>\c</code></h2><p>우리가 만든 데이터베이스 안으로 들어가보자. 그런데 postgres로서 들어갔다고 알려준다. 위에서 했던 것처럼 SET ROLE을 사용하여 다시 우리가 만든 유저로 바꿔주자. (그냥 postgres로 진행해도 크게 상관은 없으리라 생각된다)</p><pre><code>postgres=&gt; \c 데이터베이스이름
+
+You are now connected to database &quot;데이터베이스이름&quot; as user &quot;postgres&quot;.
+
+데이터베이스이름=# SET ROLE 유저이름;
+
+SET
+
+데이터베이스이름=&gt;</code></pre><h2><code>\dt, \d</code></h2><p><code>\dt</code>는 데이터베이스 내의 모든 테이블을 보여준다. <code>\d</code>는 테이블을 포함해서 sequence, view까지 포함해서 보여준다. 아직 아무 테이블이 없다면 Did not find any relations. 라고 뜰 것이다.</p><pre><code>데이터베이스이름=&gt; \dt
+
+Did not find any relations.
+
+데이터베이스이름=&gt; \d
+
+Did not find any relations.</code></pre><p>테이블을 만드는 명령어는 다루지 않는다. 왜냐하면 쓴 적이 없다. CREATE DATABASE까지만이 우리가 여기서 해줄 일이다. Django를 쓰건 typeORM을 쓰건 테이블은 이들이 model이나 entity에 따라서 자동으로 생성할 것이다. 그래도 다루는 것이 좋지 않겠는가? 하시는 분들도 있겠지만 이 포스트 제목이 &#x27;간단하고 자그마한 나의 PostgreSQL 명령문들&#x27;이라는 것을 상기하시길...</p><p>백엔드 프로그램이 성공적으로 실행됐다면 이제 테이블들이 보일 것이다.</p><pre><code>데이터베이스이름=&gt; \dt
+
+                         List of relations
+ Schema |                Name                | Type  |    Owner
+--------+------------------------------------+-------+-------------
+ public | 테이블이름                          | table | 유저이름
+ public | 테이블이름                          | table | 유저이름
+ public | 테이블이름                          | table | 유저이름
+ public | 테이블이름                          | table | 유저이름
+
+(4 rows)
+
+데이터베이스이름=&gt;</code></pre><h2><code>SELECT * FROM 테이블이름;</code></h2><p>테이블 내부의 모든 데이터를 열람한다. 테이터의 양이 많을 경우 끊어서 보여주는데, 엔터키를 누르면 다음 데이터를 보여준다. 중단하고 싶다면 <code>q</code>를 누르자.</p><pre><code>데이터베이스이름=&gt; SELECT * FROM 데이터베이스이름;
+
+ id |         createdAt          |         updatedAt          |         email
+----+----------------------------+----------------------------+------------------------
+  1 | 2020-12-15 16:40:04.031237 | 2020-12-15 19:55:29.938685 | typescript@gmail.com
+  2 | 2020-12-15 20:44:25.582199 | 2020-12-15 20:44:25.582199 | python@gmail.com
+  3 | 2021-01-04 12:29:27.786251 | 2021-01-04 12:29:27.786251 | go@gmail.com
+(3 rows)
+
+데이터베이스이름=&gt;</code></pre><h2>테이블 이름을 user로 지었을 때</h2><p>보통 유저들의 model이나 entity의 이름을 user라고 짓는데, 문제는 user는 postgresql에서도 사용하고 있다는 것이다. user라는 테이블을 만들었다고 가정하면,</p><pre><code>데이터베이스이름=&gt; SELECT * FROM user;
+
+user
+----------
+유저네임
+(1 row)
+
+데이터베이스이름=&gt;</code></pre><p>내 테이블의 데이터 대신 현재 사용중인 postgresql 유저가 나온다. 그래서 나는 보통 user대신 users로 model을 정의하는 편이다. 아니면 쌍따옴표로 &quot;user&quot;라고 써주면 내 user테이블을 보여준다.</p><pre><code>데이터베이스이름=&gt; SELECT * FROM &quot;user&quot;;
+
+ id |         createdAt          |         updatedAt          |         email
+----+----------------------------+----------------------------+------------------------
+  1 | 2020-12-15 16:40:04.031237 | 2020-12-15 19:55:29.938685 | typescript@gmail.com
+  2 | 2020-12-15 20:44:25.582199 | 2020-12-15 20:44:25.582199 | python@gmail.com
+  3 | 2021-01-04 12:29:27.786251 | 2021-01-04 12:29:27.786251 | go@gmail.com
+(3 rows)
+
+데이터베이스이름=&gt;</code></pre><h2><code>DELETE FROM 테이블이름 WHERE 조건;</code></h2><p>위의 user 테이블로 진행하겠다. 테이블 내의 row 중 조건을 충족하는 row를 삭제하는 명령이다.</p><pre><code>데이터베이스이름=&gt; DELETE FROM &quot;user&quot; WHERE id=3;
+
+DELETE 1
+
+데이터베이스이름=&gt; SELECT * FROM &quot;user&quot;;
+
+ id |         createdAt          |         updatedAt          |         email
+----+----------------------------+----------------------------+------------------------
+  1 | 2020-12-15 16:40:04.031237 | 2020-12-15 19:55:29.938685 | typescript@gmail.com
+  2 | 2020-12-15 20:44:25.582199 | 2020-12-15 20:44:25.582199 | python@gmail.com
+(2 rows)
+
+데이터베이스이름=&gt;</code></pre><h2><code>DELETE FROM 테이블이름;</code></h2><p>테이블의 모든 row를 지운다.</p><pre><code>데이터베이스이름=&gt; DELETE FROM &quot;user&quot;;
+
+DELETE 2
+
+데이터베이스이름=&gt; SELECT * from &quot;user&quot;;
+
+ id | createdAt | updatedAt | email
+----+-----------+-----------+-------
+(0 rows)
+
+데이터베이스이름=&gt;</code></pre><h2><code>DROP DATABASE 데이터베이스이름;</code></h2><p>데이터베이스를 통째로 삭제한다. 주의해서 사용해야 된다. 해당 데이터베이스 내에서 삭제하는 것은 불가능하므로 다른 데이터베이스로 나가야 된다. 기본 데이터베이스인 postgres로 이동한 뒤 명령어를 실행해 보자.</p><pre><code>데이터베이스이름=&gt; \c postgres
+
+postgres=# DROP DATABASE 데이터베이스이름;
+
+DROP DATABASE
+
+postgres=#
+</code></pre><h2>마치며</h2><p>내가 자주 사용하는 PostgreSQL 명령어들을 적어봤다. 현재로서는 매우 기본적인 수준이다. typeORM 로그로 지나가는 무수한 SQL문을 언젠가는 모두 알아들을 수 있는 날이 오기를 바란다.</p></main></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"frontmatter":{"title":"간단하고 자그마한 나의 PostgreSQL 명령문들"},"content":"\n\u003cimg src=\"https://images.unsplash.com/photo-1535077516733-ad29da1026f6?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D\u0026ixlib=rb-1.2.1\u0026auto=format\u0026fit=crop\u0026w=1398\u0026q=80\" alt=\"Elephant\" title=\"Elephant\"\u003e\n\u003cspan class=\"photo-reference\"\u003ePhoto by \u003ca href=\"https://unsplash.com/@davidclode?utm_source=unsplash\u0026amp;utm_medium=referral\u0026amp;utm_content=creditCopyText\"\u003eDavid Clode\u003c/a\u003e on \u003ca href=\"https://unsplash.com/s/photos/baby-elephant?utm_source=unsplash\u0026amp;utm_medium=referral\u0026amp;utm_content=creditCopyText\"\u003eUnsplash\u003c/a\u003e\u003c/span\u003e\n\n명령문을 모두 알고 있지는 않다. 하지만 개인 프로젝트를 진행하면서 가장 빈번하게 사용하게 되는 기본적인 명령어들을 정리해 보고자 한다. 물론 pgAdmin같은 GUI를 사용한다면 필요없겠지만...  \nwsl2를 사용하고 있으므로 아래의 예시들은 모두 wsl2 환경에서 진행됐다.\n\nwsl2에서 postgresql을 실행\n\n```\n\u003e sudo -u postgres psql\n```\n\n그러면 `postgres=#`로 표시되는 psql로 들어가게 된다.\n\n## 시작하기 전에...\n\n여기서 몇 가지 일러두자면, 대문자를 쓰는 이유는 SQL명령문임을 강조하기 위해서다. 소문자로 입력하더라고 상관이 없다. 다만 데이터베이스의 종류에 따라서는 그래도 대소문자를 구별해 주는 것이 좋다고 알고 있는데, 적어도 이 포스트 내용에 한해서는 괜찮다.  \n그리고 명령어 마지막에 항상 `;`을 붙여야 한다. 이거 의외로 실수하기 쉬우니 명심하자. 세미콜론을 붙이지 않으면 명령문이 실행되지 않고 `postgres-#`로 넘어간다.\n\n```\npostgres=# SELECT CURRENT_USER (;빼먹음!)\npostgres-#\n```\n\n당황하지 말고 `;`을 마저 적고 엔터를 치면 된다.\n\n```\npostgres=# SELECT CURRENT_USER (;빼먹음!)\npostgres-# ;\n\ncurrent_user\n--------------\npostgres\n(1 row)\n\npostgres=#\n```\n\n## `CREATE USER 유저이름 WITH PASSWORD '암호';`\n\npostgres는 기본적으로 존재하는 superuser다. 이 유저로 진행해도 개인 사이드 프로젝트 정도라면 별 상관이 없겠지만 그래도 새로운 유저를 등록하는 것이 좋다. 암호를 적을 때에는 작은 따옴표를 써야 된다.(`''`)\n\n```\npostgres=# CREATE USER 유저이름 WITH PASSWORD '암호';\n\nCREATE ROLE\n```\n\n## `ALTER USER 유저이름 WITH CREATEDB;`\n\n새로 생성된 유저로 프로젝트를 진행하기 위해서는 이 유저로 데이터베이스를 만들 수 있는 권한을 부여해 줘야 된다.\n\n```\npostgres=# ALTER USER 유저이름 WITH CREATEDB;\n\nALTER ROLE\n```\n\n## `\\du`\n\n이 명령어는 모든 유저들을 보여준다. 우리가 생성한 유저에게 Create DB 라고 데이터베이스를 생성할 수 있는 권한이 부여된 것을 볼 수 있다.\n\n```\npostgres=# \\du\n\n                                    List of roles\n  Role name  |                         Attributes                         | Member of\n-------------+------------------------------------------------------------+-----------\n postgres    | Superuser, Create role, Create DB, Replication, Bypass RLS | {}\n 유저이름    | Create DB                                                  | {}\n```\n\n## `SET ROLE 유저이름;`\n\n여기까지는 superuser인 postgres로 진행한 것이다. 이제 방금 생성한 유저로 갈아타 보자.\n\n```\npostgres=# SET ROLE 유저이름;\n\nSET\n\npostgres=\u003e\n```\n\n## `SELECT CURRENT_USER;`\n\n지금 사용 중인 유저가 어떤 유저인지 볼 수 있다. 우리가 만든 유저로 무사히 넘어왔음을 볼 수 있다.\n\n```\npostgres=\u003e SELECT CURRENT_USER;\n\ncurrent_user\n--------------\n유저이름\n(1 row)\n\npostgres=\u003e\n```\n\n## `CREATE DATABASE 데이터베이스이름;`\n\n데이터베이스를 만든다.\n\n```\npostgres=\u003e CREATE DATABASE 데이터베이스이름;\n\nCREATE DATABASE\n\npostgres=\u003e\n```\n\n## `\\l`\n\n소문자 엘이다. 대문자가 L인 그 엘. 리스트(list)의 엘. 현재 postgresql의 모든 데이터베이스들을 보여준다. 우리가 만든 데이터베이스 말고도 postgres, template0, template1이 있으면 정상이다. 이것들은 건들지 말자.\n\n```\npostgres=\u003e \\l\n\n                                List of databases\n    Name         |    Owner    | Encoding | Collate |  Ctype  |   Access privileges\n-----------------+-------------+----------+---------+---------+-----------------------\n 데이터베이스이름| 유저이름    | UTF8     | C.UTF-8 | C.UTF-8 |\n postgres        | postgres    | UTF8     | C.UTF-8 | C.UTF-8 |\n template0       | postgres    | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +\n                 |             |          |         |         | postgres=CTc/postgres\n template1       | postgres    | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +\n                 |             |          |         |         | postgres=CTc/postgres\n(4 rows)\n\npostgres=\u003e\n```\n\n## `\\c`\n\n우리가 만든 데이터베이스 안으로 들어가보자. 그런데 postgres로서 들어갔다고 알려준다. 위에서 했던 것처럼 SET ROLE을 사용하여 다시 우리가 만든 유저로 바꿔주자. (그냥 postgres로 진행해도 크게 상관은 없으리라 생각된다)\n\n```\npostgres=\u003e \\c 데이터베이스이름\n\nYou are now connected to database \"데이터베이스이름\" as user \"postgres\".\n\n데이터베이스이름=# SET ROLE 유저이름;\n\nSET\n\n데이터베이스이름=\u003e\n```\n\n## `\\dt, \\d`\n\n`\\dt`는 데이터베이스 내의 모든 테이블을 보여준다. `\\d`는 테이블을 포함해서 sequence, view까지 포함해서 보여준다. 아직 아무 테이블이 없다면 Did not find any relations. 라고 뜰 것이다.\n\n```\n데이터베이스이름=\u003e \\dt\n\nDid not find any relations.\n\n데이터베이스이름=\u003e \\d\n\nDid not find any relations.\n```\n\n테이블을 만드는 명령어는 다루지 않는다. 왜냐하면 쓴 적이 없다. CREATE DATABASE까지만이 우리가 여기서 해줄 일이다. Django를 쓰건 typeORM을 쓰건 테이블은 이들이 model이나 entity에 따라서 자동으로 생성할 것이다. 그래도 다루는 것이 좋지 않겠는가? 하시는 분들도 있겠지만 이 포스트 제목이 '간단하고 자그마한 나의 PostgreSQL 명령문들'이라는 것을 상기하시길...\n\n백엔드 프로그램이 성공적으로 실행됐다면 이제 테이블들이 보일 것이다.\n\n```\n데이터베이스이름=\u003e \\dt\n\n                         List of relations\n Schema |                Name                | Type  |    Owner\n--------+------------------------------------+-------+-------------\n public | 테이블이름                          | table | 유저이름\n public | 테이블이름                          | table | 유저이름\n public | 테이블이름                          | table | 유저이름\n public | 테이블이름                          | table | 유저이름\n\n(4 rows)\n\n데이터베이스이름=\u003e\n```\n\n## `SELECT * FROM 테이블이름;`\n\n테이블 내부의 모든 데이터를 열람한다. 테이터의 양이 많을 경우 끊어서 보여주는데, 엔터키를 누르면 다음 데이터를 보여준다. 중단하고 싶다면 `q`를 누르자.\n\n```\n데이터베이스이름=\u003e SELECT * FROM 데이터베이스이름;\n\n id |         createdAt          |         updatedAt          |         email\n----+----------------------------+----------------------------+------------------------\n  1 | 2020-12-15 16:40:04.031237 | 2020-12-15 19:55:29.938685 | typescript@gmail.com\n  2 | 2020-12-15 20:44:25.582199 | 2020-12-15 20:44:25.582199 | python@gmail.com\n  3 | 2021-01-04 12:29:27.786251 | 2021-01-04 12:29:27.786251 | go@gmail.com\n(3 rows)\n\n데이터베이스이름=\u003e\n```\n\n## 테이블 이름을 user로 지었을 때\n\n보통 유저들의 model이나 entity의 이름을 user라고 짓는데, 문제는 user는 postgresql에서도 사용하고 있다는 것이다. user라는 테이블을 만들었다고 가정하면,\n\n```\n데이터베이스이름=\u003e SELECT * FROM user;\n\nuser\n----------\n유저네임\n(1 row)\n\n데이터베이스이름=\u003e\n```\n\n내 테이블의 데이터 대신 현재 사용중인 postgresql 유저가 나온다. 그래서 나는 보통 user대신 users로 model을 정의하는 편이다. 아니면 쌍따옴표로 \"user\"라고 써주면 내 user테이블을 보여준다.\n\n```\n데이터베이스이름=\u003e SELECT * FROM \"user\";\n\n id |         createdAt          |         updatedAt          |         email\n----+----------------------------+----------------------------+------------------------\n  1 | 2020-12-15 16:40:04.031237 | 2020-12-15 19:55:29.938685 | typescript@gmail.com\n  2 | 2020-12-15 20:44:25.582199 | 2020-12-15 20:44:25.582199 | python@gmail.com\n  3 | 2021-01-04 12:29:27.786251 | 2021-01-04 12:29:27.786251 | go@gmail.com\n(3 rows)\n\n데이터베이스이름=\u003e\n```\n\n## `DELETE FROM 테이블이름 WHERE 조건;`\n\n위의 user 테이블로 진행하겠다. 테이블 내의 row 중 조건을 충족하는 row를 삭제하는 명령이다.\n\n```\n데이터베이스이름=\u003e DELETE FROM \"user\" WHERE id=3;\n\nDELETE 1\n\n데이터베이스이름=\u003e SELECT * FROM \"user\";\n\n id |         createdAt          |         updatedAt          |         email\n----+----------------------------+----------------------------+------------------------\n  1 | 2020-12-15 16:40:04.031237 | 2020-12-15 19:55:29.938685 | typescript@gmail.com\n  2 | 2020-12-15 20:44:25.582199 | 2020-12-15 20:44:25.582199 | python@gmail.com\n(2 rows)\n\n데이터베이스이름=\u003e\n```\n\n## `DELETE FROM 테이블이름;`\n\n테이블의 모든 row를 지운다.\n\n```\n데이터베이스이름=\u003e DELETE FROM \"user\";\n\nDELETE 2\n\n데이터베이스이름=\u003e SELECT * from \"user\";\n\n id | createdAt | updatedAt | email\n----+-----------+-----------+-------\n(0 rows)\n\n데이터베이스이름=\u003e\n```\n\n## `DROP DATABASE 데이터베이스이름;`\n\n데이터베이스를 통째로 삭제한다. 주의해서 사용해야 된다. 해당 데이터베이스 내에서 삭제하는 것은 불가능하므로 다른 데이터베이스로 나가야 된다. 기본 데이터베이스인 postgres로 이동한 뒤 명령어를 실행해 보자.\n\n```\n데이터베이스이름=\u003e \\c postgres\n\npostgres=# DROP DATABASE 데이터베이스이름;\n\nDROP DATABASE\n\npostgres=#\n\n```\n\n## 마치며\n\n내가 자주 사용하는 PostgreSQL 명령어들을 적어봤다. 현재로서는 매우 기본적인 수준이다. typeORM 로그로 지나가는 무수한 SQL문을 언젠가는 모두 알아들을 수 있는 날이 오기를 바란다.\n","excerpt":"명령문을 모두 알고 있지는 않다. 하지만 개인 프로젝트를 진행하면서 가장 빈번하게 사용하게 되는 기본적인 명령어들을 정리해 보고자 한다. 물론 pgAdmin같은 GUI를 사용한다면 필요없겠지만... wsl2를 사용하고 있으므로 아래의 예시들은 모두 wsl2 환경에서 진행됐다. wsl2에서 postgresql을 실행 \u003e sudo -u postgres psql 그러면 `postgres=#`로 표시되는 psql로 들어가게 된다. 시작하기 전에... 여기서 몇 가지 일러두자면, 대문자를 쓰는 이유는 SQL명령문임을 강조하기 위해서다. 소문자로 입력하더라고 상관이 없다. 다만 데이터베이스의 종류에 따라서는 그래도 대소문자를 구별해 주는 것이 좋다고 알고 있는데, 적어도 이 포스트 내용에 한해서는 괜찮다. 그리고 명령어 마지막에 항상 `;`을 붙여야 한다. 이거 의외로 실수하기 쉬우니 명심하자. 세미콜론을 붙이지 않으면 명령문이 실행되지 않고 `postgres-#`로 넘어간다. postgres=# SELECT CURRENT_USER (;빼먹음!) postgres-# 당황하지 말고 `;`을 마저 적고 엔터를 치면 된다. postgres=# SELECT CURRENT_USER (;빼먹음!) postgres-# ;..."},"__N_SSG":true},"page":"/blog/[slug]","query":{"slug":"2021-02-18"},"buildId":"tRlPjWFfcvz3X43vge9eB","nextExport":false,"isFallback":false,"gsp":true}</script><script nomodule="" src="/_next/static/chunks/polyfills-8f31809deb7932dd0187.js"></script><script src="/_next/static/chunks/main-169ce08b66015a7a4280.js" async=""></script><script src="/_next/static/chunks/webpack-50bee04d1dc61f8adf5b.js" async=""></script><script src="/_next/static/chunks/framework.0c239260661ae1d12aa2.js" async=""></script><script src="/_next/static/chunks/3ef630e34cd10ba68f9d468ac363ff81c534e1e9.02c1a86df8cc819e73c2.js" async=""></script><script src="/_next/static/chunks/71247caf95475e3ea7f9a0f8a30beb258b23d005.8776f26ccde912c7e1b0.js" async=""></script><script src="/_next/static/chunks/pages/_app-b214772b8bebbaf1d838.js" async=""></script><script src="/_next/static/chunks/pages/blog/%5Bslug%5D-e6b10c68b57b19a16109.js" async=""></script><script src="/_next/static/tRlPjWFfcvz3X43vge9eB/_buildManifest.js" async=""></script><script src="/_next/static/tRlPjWFfcvz3X43vge9eB/_ssgManifest.js" async=""></script></body></html>
