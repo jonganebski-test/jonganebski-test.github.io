@@ -1,17 +1,17 @@
 import Head from "next/head";
 import Link from "next/link";
 import fs from "fs";
-// import { iStyled } from "../styles/theme";
-import styled from "styled-components";
+import { iStyled } from "../styles/theme";
+import { Layout } from "../components/layout";
 
-const Test = styled.div`
-  color: ${({ theme }) => theme.red};
+const Test = iStyled.div`
+  color: ${({ theme }) => theme.textColor.base};
   font-size: 2rem;
 `;
 
 export default function Home({ slugs }) {
   return (
-    <>
+    <Layout pageTitle="Welcome!">
       <Test>This is a test</Test>
       {slugs.map((slug) => {
         return (
@@ -20,7 +20,7 @@ export default function Home({ slugs }) {
           </Link>
         );
       })}
-    </>
+    </Layout>
   );
 }
 
