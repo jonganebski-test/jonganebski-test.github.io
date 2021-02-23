@@ -2,13 +2,12 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { ThemeProvider } from "styled-components";
 import { NAV_HEIGHT, ROUTES_WITH_FIXED_HEADER } from "../common/constants";
 import { GlobalStyle } from "../styles/global";
-import { darkTheme, lightTheme, iStyled } from "../styles/theme";
+import { darkTheme, lightTheme, styled } from "../styles/theme";
 import { Footer } from "./footer";
 import { Header } from "./header";
 import { Nav } from "./nav";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import hljs from "highlight.js";
 
 // ------------------------
 //    Interfaces & Types
@@ -33,14 +32,14 @@ type ColorMode = "light" | "dark";
 //    Styled Components
 // ------------------------
 
-const Wrapper = iStyled.div`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
 `;
 
-const Container = iStyled.div<IContainerProps>`
+const Container = styled.div<IContainerProps>`
   position: relative;
   z-index: 1;
   width: 100%;
@@ -60,7 +59,7 @@ const Container = iStyled.div<IContainerProps>`
   align-items: center;
 `;
 
-const ArrowDown = iStyled.button`
+const ArrowDown = styled.button`
   all: unset;
   position: absolute;
   top: -1.5rem;
@@ -81,7 +80,7 @@ const ArrowDown = iStyled.button`
   }
 `;
 
-const Switch = iStyled.label<ISwitchProps>`
+const Switch = styled.label<ISwitchProps>`
   position: absolute;
   z-index: 1;
   top: calc(${NAV_HEIGHT} + 1rem);
@@ -157,13 +156,6 @@ export const Layout: React.FC<ILayoutProps> = ({ children, pageTitle }) => {
     return () => document.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    console.log("Foo");
-    document.querySelectorAll("pre > code").forEach((block) => {
-      hljs.highlightBlock(block as HTMLElement);
-    });
-  }, [colorMode]);
-
   const autoScroll = () => {
     if (containerRef.current) {
       window.scroll({
@@ -191,9 +183,10 @@ export const Layout: React.FC<ILayoutProps> = ({ children, pageTitle }) => {
         <link
           rel="stylesheet"
           href={`https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/${
-            colorMode === "dark" ? "vs2015" : "github"
+            colorMode === "dark" ? "vs2015" : "stackoverflow-light"
           }.min.css`}
         />
+        <link rel="icon" type="image/png" href="/favicon.png" />
       </Head>
       <Wrapper className="wrapper" data-theme={colorMode}>
         <Nav />

@@ -1,57 +1,36 @@
 import React, { useEffect, useRef } from "react";
-import { iStyled } from "../styles/theme";
-
-// ------------------------
-//    Interfaces
-// ------------------------
-
-interface IFrontMatter {
-  title: string;
-  date: string;
-  techs: string[];
-}
-
-interface IProject {
-  htmlString: string;
-  frontMatter: IFrontMatter;
-}
-
-interface IProjectProps {
-  project: IProject;
-}
+import { IGetProjects_project } from "../interfaces/get-projects.interfaces";
+import { styled } from "../styles/theme";
 
 // ------------------------
 //    Styled Components
 // ------------------------
 
-const ProjectLi = iStyled.li`
+const ProjectLi = styled.li`
   width: 100%;
   max-width: 750px;
   display: grid;
-  gap: 2rem;
 `;
 
-const Title = iStyled.h2`
+const Title = styled.h2`
   font-size: 2.2rem;
 `;
 
-const Article = iStyled.article`
-  span {
-    margin: 2rem 0;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  }
-  img{
-      width: 100%;
-      max-width: 750px;
+const Article = styled.article`
+  img {
+    width: 100%;
+    max-width: 750px;
+    box-shadow: 5px 20px 25px -5px rgba(0, 0, 0, 0.05),
+      5px 10px 10px 5px rgba(0, 0, 0, 0.04);
   }
   p {
+    margin: 2rem 0;
     font-family: "Nanum Gothic", sans-serif;
     line-height: 1.7rem;
   }
 `;
 
-const TechsList = iStyled.ul`
+const TechsList = styled.ul`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
   gap: 1rem;
@@ -62,7 +41,10 @@ const TechsList = iStyled.ul`
 //    Main Component
 // ------------------------
 
-export const Project: React.FC<IProjectProps> = ({ project }) => {
+export const Project: React.FC<IGetProjects_project> = ({
+  frontmatter,
+  htmlString,
+}) => {
   const projectRef = useRef<HTMLLIElement | null>(null);
 
   useEffect(() => {
@@ -103,10 +85,10 @@ export const Project: React.FC<IProjectProps> = ({ project }) => {
 
   return (
     <ProjectLi ref={projectRef}>
-      <Title>{project.frontMatter.title}</Title>
-      <Article dangerouslySetInnerHTML={{ __html: project.htmlString }} />
+      <Title>{frontmatter.title}</Title>
+      <Article dangerouslySetInnerHTML={{ __html: htmlString }} />
       <TechsList>
-        {project.frontMatter.techs.map((tech, i) => (
+        {frontmatter.techs.map((tech, i) => (
           <li key={i}>{tech}</li>
         ))}
       </TechsList>

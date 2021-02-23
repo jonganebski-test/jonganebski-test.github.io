@@ -1,11 +1,12 @@
 import React from "react";
-import { iStyled } from "../styles/theme";
+import { styled } from "../styles/theme";
+import Image from "next/image";
 
 // ------------------------
 //    Styled Components
 // ------------------------
 
-const Wrapper = iStyled.footer`
+const Wrapper = styled.footer`
   margin-top: auto;
   padding: 5rem 0 1rem 0;
   height: 10rem;
@@ -16,15 +17,20 @@ const Wrapper = iStyled.footer`
   color: ${({ theme }) => theme.textColor.rare};
 `;
 
-const FlexDiv = iStyled.div`
+const FlexDiv = styled.div`
   display: flex;
   align-items: flex-end;
 `;
 
-const GatsbyIcon = iStyled.img`
+const Anchor = styled.a`
   margin-left: 5px;
-  width: 1.1rem;
-  height: 1.1rem;
+  display: flex;
+  align-items: flex-end;
+`;
+
+const NextjsLogo = styled.img`
+  width: 40px;
+  filter: ${({ theme }) => theme.svg.filter};
 `;
 
 // ------------------------
@@ -36,9 +42,9 @@ export const Footer = () => {
     <Wrapper>
       <FlexDiv>
         <span>Created with</span>
-        <a href="https://www.gatsbyjs.com/" target="_blank" rel="noopener">
-          <GatsbyIcon src="/Gatsby-Monogram.svg" />
-        </a>
+        <Anchor href="https://nextjs.org/" target="_blank" rel="noopener">
+          <NextjsLogo src="/Nextjs-logo.svg" />
+        </Anchor>
       </FlexDiv>
       <span>Copyright &copy; Jon Ganebski {new Date().getFullYear()}</span>{" "}
     </Wrapper>

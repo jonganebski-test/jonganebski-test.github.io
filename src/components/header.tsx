@@ -1,7 +1,7 @@
 import React from "react";
 import { keyframes } from "styled-components";
 import { EMAIL } from "../common/constants";
-import { iStyled } from "../styles/theme";
+import { styled } from "../styles/theme";
 
 // ------------------------
 //    Interfaces
@@ -15,7 +15,7 @@ interface IHeaderProps {
 //    Styled Components
 // ------------------------
 
-const Wrapper = iStyled.header`
+const Wrapper = styled.header`
   position: fixed;
   height: calc(100vh - 5rem);
   width: 100%;
@@ -27,7 +27,7 @@ const Wrapper = iStyled.header`
   background-color: ${({ theme }) => theme.bgColor.background};
 `;
 
-const Intro = iStyled.div`
+const Intro = styled.div`
   max-width: 1000px;
   width: 100%;
   height: 30%;
@@ -54,12 +54,12 @@ const waveHand = keyframes`
   }
 `;
 
-const HiEmoji = iStyled.span`
+const HiEmoji = styled.span`
   display: inline-block;
   animation: ${waveHand} 10s linear infinite;
 `;
 
-const Anchor = iStyled.a`
+const Anchor = styled.a`
   color: ${({ theme }) => theme.textColor.rare};
   text-underline-offset: 0.5rem;
   &:hover {

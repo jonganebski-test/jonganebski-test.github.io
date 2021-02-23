@@ -1,24 +1,29 @@
 import React from "react";
 import { Layout } from "../components/layout";
-import { iStyled } from "../styles/theme";
+import { styled } from "../styles/theme";
 import fs from "fs";
 import { Project } from "../components/project";
 import path from "path";
 import marked from "marked";
 import matter from "gray-matter";
-import { NextPage } from "next";
+import { GetStaticProps, NextPage } from "next";
+import {
+  IGetProjectsOutput,
+  IGetProjects_project,
+} from "../interfaces/get-projects.interfaces";
+import { IProjectFrontmatter } from "../interfaces/frontmatters.interfaces";
 
 // ------------------------
 //    Styled Components
 // ------------------------
 
-const Main = iStyled.main`
+const Main = styled.main`
   width: 100%;
   padding: 8rem 0;
   max-width: 1000px;
 `;
 
-const ProjectsList = iStyled.ul`
+const ProjectsList = styled.ul`
   width: 100%;
   display: grid;
   place-items: center;
@@ -29,17 +34,13 @@ const ProjectsList = iStyled.ul`
 //    Main Component
 // ------------------------
 
-interface IProjectsPage {
-  projects: IProject[];
-}
-
-const ProjectsPage: NextPage<IProjectsPage> = ({ projects }) => {
+const ProjectsPage: NextPage<IGetProjectsOutput> = ({ projects }) => {
   return (
     <Layout pageTitle="Projects">
       <Main>
         <ProjectsList>
           {projects.map((project, i) => {
-            return <Project project={project} key={i} />;
+            return <Project {...project} key={i} />;
           })}
         </ProjectsList>
       </Main>
@@ -47,27 +48,16 @@ const ProjectsPage: NextPage<IProjectsPage> = ({ projects }) => {
   );
 };
 
-interface IFrontMatter {
-  title: string;
-  date: string;
-  techs: string[];
-}
-
-interface IProject {
-  htmlString: string;
-  frontMatter: IFrontMatter;
-}
-
-export const getStaticProps = async () => {
-  const files = fs.readdirSync("posts/projects");
-  const projects: IProject[] = files.map((fileName) => {
+export const getStaticProps: GetStaticProps<IGetProjectsOutput> = async () => {
+  const files = fs.readdirSync("src/posts/projects");
+  const projects: IGetProjects_project[] = files.map((fileName) => {
     const metadata = fs
-      .readFileSync(path.join("posts", "projects", fileName))
+      .readFileSync(path.join("src", "posts", "projects", fileName))
       .toString();
     const result = matter(metadata);
     const htmlString = marked(result.content);
-    const frontMatter = result.data as IFrontMatter;
-    return { htmlString, frontMatter };
+    const frontmatter = result.data as IProjectFrontmatter;
+    return { htmlString, frontmatter };
   });
   return {
     props: {

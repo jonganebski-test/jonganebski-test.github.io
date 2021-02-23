@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import { iStyled } from "../styles/theme";
+import React, { useState } from "react";
 import { VscClose } from "react-icons/vsc";
+import { styled } from "../styles/theme";
 
 // ------------------------
 //    Interfaces
@@ -14,7 +14,7 @@ interface IStateProvider {
 //    Styled Components
 // ------------------------
 
-const ListItem = iStyled.li`
+const ListItem = styled.li`
   flex-shrink: 0;
   width: 100%;
   max-width: 1200px;
@@ -26,12 +26,12 @@ const ListItem = iStyled.li`
   }
 `;
 
-const Container = iStyled.div`
+const Container = styled.div`
   position: relative;
   cursor: pointer;
 `;
 
-const CloseButton = iStyled.div`
+const CloseButton = styled.div`
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -52,7 +52,7 @@ const CloseButton = iStyled.div`
   }
 `;
 
-const Photograph = iStyled.img<IStateProvider>`
+const Photograph = styled.img<IStateProvider>`
   width: 100%;
   max-width: 100%;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
@@ -63,7 +63,7 @@ const Photograph = iStyled.img<IStateProvider>`
   filter: ${({ showText }) => (showText ? "blur(2px)" : "blur(0px)")};
 `;
 
-const Article = iStyled.article<IStateProvider>`
+const Article = styled.article<IStateProvider>`
   position: absolute;
   top: 0;
   left: 0;

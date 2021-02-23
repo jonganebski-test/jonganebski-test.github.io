@@ -1,13 +1,13 @@
 import Link from "next/link";
 import React from "react";
 import { NAV_HEIGHT } from "../common/constants";
-import { iStyled } from "../styles/theme";
+import { styled } from "../styles/theme";
 
 // ------------------------
 //    Styled Components
 // ------------------------
 
-const Wrapper = iStyled.nav`
+const Wrapper = styled.nav`
   position: fixed;
   top: 0px;
   z-index: 10;
@@ -18,7 +18,7 @@ const Wrapper = iStyled.nav`
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
 `;
 
-const Ul = iStyled.ul`
+const Ul = styled.ul`
   margin: 0 auto;
   height: 100%;
   width: full;
@@ -30,7 +30,7 @@ const Ul = iStyled.ul`
   gap: 1rem;
 `;
 
-const StyledLink = iStyled(Link)`
+const StyledLink = styled(Link)`
   text-decoration: none;
   font-weight: 600;
   color: ${({ theme }) => theme.textColor.shade};

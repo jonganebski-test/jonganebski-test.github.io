@@ -1,25 +1,27 @@
 import { useEffect, useRef, useState } from "react";
 import { GalleryItem } from "../components/gallery-item";
 import { Layout } from "../components/layout";
-import { iStyled } from "../styles/theme";
+import { styled } from "../styles/theme";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import marked from "marked";
-import { NextPage } from "next";
+import { GetStaticProps, NextPage } from "next";
+import { IGalleryFrontmatter } from "../interfaces/frontmatters.interfaces";
+import { IGetGalleryOutput } from "../interfaces/get-gallery.interfaces";
 
 // ------------------------
 //    Styled Components
 // ------------------------
 
-const Main = iStyled.main`
+const Main = styled.main`
   position: relative;
   max-width: 1200px;
   width: 100%;
 `;
 
-const Slider = iStyled.ul`
+const Slider = styled.ul`
   display: flex;
   overflow-x: scroll;
   overflow-y: hidden;
@@ -32,7 +34,7 @@ const Slider = iStyled.ul`
   scrollbar-width: none;
 `;
 
-const ExploreBtnCore = iStyled.div`
+const ExploreBtnCore = styled.div`
   position: absolute;
   width: 3rem;
   height: 50%;
@@ -51,23 +53,23 @@ const ExploreBtnCore = iStyled.div`
     align-items: center;
   }
 `;
-const ExploreLeft = iStyled(ExploreBtnCore)`
+const ExploreLeft = styled(ExploreBtnCore)`
   left: 0;
   transform: translateY(-50%);
 `;
-const ExploreRight = iStyled(ExploreBtnCore)`
+const ExploreRight = styled(ExploreBtnCore)`
   right: 0;
   transform: translateY(-50%);
 `;
 
-const Navigator = iStyled.nav`
+const Navigator = styled.nav`
   display: grid;
   grid-auto-flow: column;
   justify-content: center;
   gap: 2px;
 `;
 
-const DotContainer = iStyled.div`
+const DotContainer = styled.div`
   width: 16px;
   height: 16px;
   display: flex;
@@ -80,7 +82,7 @@ interface IDotProps {
   isLocation: boolean;
 }
 
-const Dot = iStyled.span<IDotProps>`
+const Dot = styled.span<IDotProps>`
   width: 8px;
   height: 8px;
   border-radius: 100%;
@@ -92,11 +94,7 @@ const Dot = iStyled.span<IDotProps>`
 //    Main Component
 // ------------------------
 
-interface IGalleryProps {
-  gallery: IGalleryData[];
-}
-
-const GalleryPage: NextPage<IGalleryProps> = ({ gallery }) => {
+const GalleryPage: NextPage<IGetGalleryOutput> = ({ gallery }) => {
   const sliderRef = useRef<HTMLUListElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -164,21 +162,15 @@ const GalleryPage: NextPage<IGalleryProps> = ({ gallery }) => {
   );
 };
 
-interface IGalleryData {
-  title: string;
-  date: string;
-  coverUrl: string;
-}
-
-export const getStaticProps = async () => {
-  const files = fs.readdirSync("posts/gallery");
+export const getStaticProps: GetStaticProps<IGetGalleryOutput> = async () => {
+  const files = fs.readdirSync("src/posts/gallery");
   const gallery = files.map((fileName) => {
     const metadata = fs
-      .readFileSync(path.join("posts", "gallery", fileName))
+      .readFileSync(path.join("src", "posts", "gallery", fileName))
       .toString();
     const result = matter(metadata);
-    const data = result.data as IGalleryData;
-    return { ...data };
+    const frontmatter = result.data as IGalleryFrontmatter;
+    return { ...frontmatter };
   });
   return {
     props: {

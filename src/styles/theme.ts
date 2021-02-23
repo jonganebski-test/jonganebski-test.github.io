@@ -1,4 +1,4 @@
-import styled, { ThemedStyledInterface } from "styled-components";
+import BaseStyled, { ThemedStyledInterface } from "styled-components";
 
 // ------------------------
 //    Interfaces
@@ -22,6 +22,9 @@ export interface IMyTheme {
     base: string;
     hover: string;
     switch: string;
+  };
+  svg: {
+    filter: string;
   };
 }
 
@@ -58,6 +61,9 @@ export const lightTheme: IMyTheme = {
     hover: "rgb(150, 150, 150)",
     switch: "#ffa198",
   },
+  svg: {
+    filter: "invert(0%)",
+  },
 };
 
 export const darkTheme: IMyTheme = {
@@ -80,10 +86,13 @@ export const darkTheme: IMyTheme = {
     hover: "rgb(150, 150, 150)",
     switch: "#8b949e",
   },
+  svg: {
+    filter: "Invert(100%)",
+  },
 };
 
 // ---------------------------
 //    Extended Base Styled
 // ---------------------------
 
-export const iStyled = styled as ThemedStyledInterface<IMyTheme>;
+export const styled = BaseStyled as ThemedStyledInterface<IMyTheme>;

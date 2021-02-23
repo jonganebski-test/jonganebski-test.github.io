@@ -1,33 +1,14 @@
-import React from "react";
-import { iStyled } from "../styles/theme";
-import { formatDate } from "../common/helpers";
 import Link from "next/link";
-
-// ------------------------
-//    Interfaces
-// ------------------------
-
-interface IFrontMatter {
-  title: string;
-  date: string;
-  coverUrl: string;
-}
-
-interface IPost {
-  slug: string;
-  excerpt: string;
-  frontMatter: IFrontMatter;
-}
-
-interface IBlogPostProps {
-  post: IPost;
-}
+import React from "react";
+import { formatDate } from "../common/helpers";
+import { IGetBlogPosts_blogPost } from "../interfaces/get-blog-posts.interfaces";
+import { styled } from "../styles/theme";
 
 // ------------------------
 //    Styled Components
 // ------------------------
 
-const Post = iStyled.li`
+const Post = styled.li`
   min-height: 10rem;
   display: grid;
   grid-template-columns: 1fr 0px;
@@ -44,20 +25,20 @@ const Post = iStyled.li`
   }
 `;
 
-const PostTitle = iStyled.h2`
+const PostTitle = styled.h2`
   font-size: 1.2rem;
   line-height: 2rem;
   font-weight: 600;
   word-break: keep-all;
 `;
 
-const Excerpt = iStyled.p`
+const Excerpt = styled.p`
   margin: 1rem 0;
   font-size: 0.9rem;
   line-height: 1.5rem;
 `;
 
-const PostInfo = iStyled.div`
+const PostInfo = styled.div`
   padding: 1rem;
   height: 100%;
   display: flex;
@@ -65,17 +46,17 @@ const PostInfo = iStyled.div`
   justify-content: space-between;
 `;
 
-const PostDate = iStyled.span`
+const PostDate = styled.span`
   font-size: 0.9rem;
   font-weight: 300;
 `;
 
-const TimeToRead = iStyled.span`
+const TimeToRead = styled.span`
   font-size: 0.9rem;
   font-weight: 300;
 `;
 
-const CoverImage = iStyled.img`
+const CoverImage = styled.img`
   height: 100%;
   width: 100%;
   object-fit: cover;
@@ -85,22 +66,26 @@ const CoverImage = iStyled.img`
 //    Main Component
 // -----------------------
 
-export const PostCard: React.FC<IBlogPostProps> = ({ post }) => {
+export const PostCard: React.FC<IGetBlogPosts_blogPost> = ({
+  excerpt,
+  frontmatter,
+  slug,
+}) => {
   return (
-    <Link href={`blog/${post.slug}`}>
+    <Link href={`/blog/${slug}`}>
       <a>
         <Post>
           <PostInfo>
-            <PostTitle>{post.frontMatter.title}</PostTitle>
-            <Excerpt>{post.excerpt}</Excerpt>
+            <PostTitle>{frontmatter.title}</PostTitle>
+            <Excerpt>{excerpt}</Excerpt>
             <div>
-              <PostDate>{formatDate(post.frontMatter.date)} • </PostDate>
+              <PostDate>{formatDate(frontmatter.date)} • </PostDate>
               {/* <TimeToRead>{post.timeToRead} min read</TimeToRead> */}
             </div>
           </PostInfo>
-          {post.frontMatter.coverUrl && (
+          {frontmatter.coverUrl && (
             <div>
-              <CoverImage src={post.frontMatter.coverUrl} />
+              <CoverImage src={frontmatter.coverUrl} />
             </div>
           )}
         </Post>
