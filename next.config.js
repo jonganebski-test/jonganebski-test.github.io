@@ -1,7 +1,7 @@
 module.exports =
   process.env.NODE_ENV === "production"
     ? {
-        basePath: "/jonganebski-test.github.io",
+        basePath: "",
         assetPrefix: "/jonganebski-test.github.io",
       }
     : {
