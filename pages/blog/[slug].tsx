@@ -1,38 +1,88 @@
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import fs from "fs";
+import matter from "gray-matter";
+import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import path from "path";
-import matter, { GrayMatterFile } from "gray-matter";
-import Head from "next/head";
-import styled from "styled-components";
-import ReactMarkdown from "react-markdown";
 import { Layout } from "../../components/layout";
+import { iStyled } from "../../styles/theme";
+import marked from "marked";
 
 interface IBlogPostProps {
-  content: string;
-  excerpt: string;
+  htmlString: string;
   frontmatter: {
     title: string;
     date: string;
   };
 }
 
-const BlogPost: NextPage<IBlogPostProps> = ({
-  frontmatter,
-  excerpt,
-  content,
-}) => {
+const Main = iStyled.main`
+  width: 100%;
+  max-width: 750px;
+`;
+
+const Title = iStyled.h1`
+  padding: 4rem 0;
+  font-size: 2.3rem;
+  font-weight: 600;
+  line-height: 3rem;
+  word-break: keep-all;
+`;
+
+const Article = iStyled.article`
+  img {
+    width: 100%;
+    max-width: 750px;
+    margin-bottom: 1rem;
+  }
+  .photo-reference {
+    display: block;
+    text-align: center;
+    font-weight: 300;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+  h2 {
+    margin-bottom: 2rem;
+    font-weight: 600;
+    font-size: 1.8rem;
+  }
+  h3 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  p,
+  ol {
+    margin-bottom: 2rem;
+    font-family: "Nanum Gothic", sans-serif;
+    line-height: 1.8rem;
+    code {
+      padding: 0.2rem 0.5rem;
+      background-color: ${({ theme }) => theme.bgColor.code};
+      border-radius: 5px;
+    }
+  }
+  code {
+    font-family: "Inconsolata", monospace;
+  }
+  ol {
+    padding-left: 2rem;
+    list-style: decimal;
+  }
+  pre {
+    margin-bottom: 2rem;
+    line-height: 1.5rem;
+    .hljs-function {
+      color: white;
+    }
+  }`;
+
+const BlogPost: NextPage<IBlogPostProps> = ({ frontmatter, htmlString }) => {
   return (
     <Layout pageTitle={frontmatter.title}>
-      <div>{excerpt}</div>
-      <ReactMarkdown
-        children={content}
-        renderers={{
-          image: ({ alt, src, title }) => {
-            console.log(alt, src, title);
-            return <img alt={alt} src={src} title={title} />;
-          },
-        }}
-      />
+      <Main>
+        <Title>{frontmatter.title}</Title>
+        <Article dangerouslySetInnerHTML={{ __html: htmlString }} />
+      </Main>
     </Layout>
   );
 };
@@ -60,49 +110,14 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
       .toString();
   }
 
-  const getExcerpt = (file, options) => {
-    const { content } = file;
-    if (typeof content === "string") {
-      const splited = content.split("\n");
-
-      let i = 0;
-      const paragraphs: string[] = [];
-      while (
-        paragraphs.reduce((acc, paragraph) => {
-          return acc + paragraph?.length;
-        }, 0) < 600 &&
-        i < splited.length
-      ) {
-        let paragraph = splited[i];
-        if (
-          paragraph !== "" &&
-          !paragraph?.startsWith("```") &&
-          !paragraph?.startsWith("<")
-        ) {
-          if (paragraph.startsWith("#")) {
-            paragraph = paragraph.replace(/[#]/g, "");
-          }
-          paragraphs.push(paragraph.trim());
-        }
-        ++i;
-      }
-      const excerpt = paragraphs.join(" ") + "...";
-      file.excerpt = excerpt;
-    }
-  };
-
-  const { data, content, excerpt } = matter(markdownWithMetadata, {
-    // @ts-ignore
-    // excerpt is wrongly typed. expect fix in future version
-    excerpt: getExcerpt,
-  });
+  const { data, content } = matter(markdownWithMetadata);
+  const htmlString = marked(content);
   return {
     props: {
       frontmatter: {
         title: data.title,
       },
-      content,
-      excerpt,
+      htmlString,
     },
   };
 };

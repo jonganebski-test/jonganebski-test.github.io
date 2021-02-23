@@ -10,14 +10,17 @@
   },
   "dependencies": {
     "gray-matter": "^4.0.2",
+    "highlight.js": "^10.6.0",
+    "marked": "^2.0.0",
     "next": "10.0.7",
     "react": "17.0.1",
     "react-dom": "17.0.1",
-    "react-markdown": "^5.0.3",
+    "react-icons": "^4.2.0",
     "styled-components": "^5.2.1",
     "styled-reset": "^4.3.4"
   },
   "devDependencies": {
+    "@types/marked": "^1.2.2",
     "@types/node": "^14.14.31",
     "@types/react": "^17.0.2",
     "@types/styled-components": "^5.1.7",

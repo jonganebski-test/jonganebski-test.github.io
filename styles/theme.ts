@@ -43,7 +43,7 @@ export const lightTheme: IMyTheme = {
     background: BACKGROUND_COLOR.LIGHT,
     pre: "rgb(235, 235, 235)",
     code: "rgb(235, 235, 235)",
-    switch: BACKGROUND_COLOR.DARK,
+    switch: "#da3633",
     alter: BACKGROUND_COLOR.DARK,
   },
   textColor: {
@@ -56,7 +56,7 @@ export const lightTheme: IMyTheme = {
   borderColor: {
     base: "rgb(220, 220, 220)",
     hover: "rgb(150, 150, 150)",
-    switch: "#8b949e",
+    switch: "#ffa198",
   },
 };
 
@@ -65,7 +65,7 @@ export const darkTheme: IMyTheme = {
     background: BACKGROUND_COLOR.DARK,
     pre: "rgb(22 27 34)",
     code: "#23241f",
-    switch: "#da3633",
+    switch: BACKGROUND_COLOR.DARK,
     alter: BACKGROUND_COLOR.DARK,
   },
   textColor: {
@@ -78,7 +78,7 @@ export const darkTheme: IMyTheme = {
   borderColor: {
     base: "rgb(50, 50, 50)",
     hover: "rgb(150, 150, 150)",
-    switch: "#ffa198",
+    switch: "#8b949e",
   },
 };
 

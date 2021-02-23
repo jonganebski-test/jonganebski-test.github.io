@@ -8,6 +8,7 @@ import { Header } from "./header";
 import { Nav } from "./nav";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import hljs from "highlight.js";
 
 // ------------------------
 //    Interfaces & Types
@@ -105,6 +106,8 @@ const Switch = iStyled.label<ISwitchProps>`
     transition: left 0.2s ease-in-out;
     transform: translate(-50%, -50%);
     background-color: ${({ theme }) => theme.bgColor.switch};
+    border: 1px solid;
+    border-color: ${({ theme }) => theme.borderColor.switch};
     border-radius: 999px;
     width: 28px;
     height: 28px;
@@ -154,6 +157,13 @@ export const Layout: React.FC<ILayoutProps> = ({ children, pageTitle }) => {
     return () => document.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    console.log("Foo");
+    document.querySelectorAll("pre > code").forEach((block) => {
+      hljs.highlightBlock(block as HTMLElement);
+    });
+  }, [colorMode]);
+
   const autoScroll = () => {
     if (containerRef.current) {
       window.scroll({
@@ -178,6 +188,12 @@ export const Layout: React.FC<ILayoutProps> = ({ children, pageTitle }) => {
       <GlobalStyle />
       <Head>
         <title>{pageTitle} | Test</title>
+        <link
+          rel="stylesheet"
+          href={`https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/${
+            colorMode === "dark" ? "vs2015" : "github"
+          }.min.css`}
+        />
       </Head>
       <Wrapper className="wrapper" data-theme={colorMode}>
         <Nav />
@@ -197,7 +213,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children, pageTitle }) => {
             defaultChecked={colorMode === "dark"}
             onChange={onToggleDarkModeSwitch}
           />
-          <span>{colorMode === "light" ? "🌜" : "🌞"}</span>
+          <span>{colorMode === "light" ? "🌞" : "🌜"}</span>
         </Switch>
       </Wrapper>
     </ThemeProvider>
